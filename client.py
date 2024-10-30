@@ -23,6 +23,7 @@ class Client:
 		print("")
 		self.main.connect((self.ip, self.port))
 		print("connected!")
+		print("")
 
 	def decide_send_or_recieve(self):
 		self.send_or_recieve = input("do you want to send or recieve file: ")
@@ -30,10 +31,10 @@ class Client:
 			exit()
 		elif(self.send_or_recieve.lower() in ["s", "send", "send file"]):
 			self.send_or_recieve = "send"
-			self.main.send("send".encode("utf-8"))
+			self.main.send("recieve".encode("utf-8"))
 		elif(self.send_or_recieve.lower() in ["r", "recieve", "recieve file"]):
 			self.send_or_recieve = "recieve"
-			self.main.send("recieve".encode("utf-8"))
+			self.main.send("send".encode("utf-8"))
 		else:
 			self.decide_send_or_recieve()
 			return 0
@@ -66,6 +67,7 @@ class Client:
 	def recieve_file(self):
 		try:
 			data = self.main.recv(1024)
+			1/len(data)
 			with open(self.file_name, "wb") as x:
 				x.write(data)
 				data = self.main.recv(1024)
@@ -88,13 +90,21 @@ client.decide_send_or_recieve()
 client.get_file_name()
 
 if(client.send_or_recieve == "send"):
+	print("")
+	print("sending...")
 	if (client.send_file()):
 		print("file sent succesfully.")
 	else:
 		print("couldnt send the file!")
 
 elif(client.send_or_recieve == "recieve"):
+	print("")
+	print("recieving...")
 	if (client.recieve_file()):
 		print("file recieved succesfully.")
 	else:
+		system("rm " + client.file_name + " >/dev/null 2>&1")
+		system("del " + client.file_name + " >/dev/null 2>&1")
 		print("couldnt recieve the file!")
+
+client.shutdown()

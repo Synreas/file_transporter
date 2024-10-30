@@ -76,6 +76,7 @@ class Server:
 	def recieve_file(self):
 		try:
 			data = self.client_socket.recv(1024)
+			1/len(data)
 			with open(self.file_name, "wb") as x:
 				x.write(data)
 				data = self.client_socket.recv(1024)
@@ -97,8 +98,20 @@ server.wait_for_connection()
 server.decide_send_or_recieve()
 server.get_file_name()
 
-if(server.send_or_recieve == "send"):
-	server.recieve_file()
+if(server.send_or_recieve == "recieve"):
+	print("receving...")
+	if(server.recieve_file()):
+		print("succesful.")
+	else:
+		print("failed!")
 
-elif(server.send_or_recieve == "recieve"):
-	server.send_file()
+elif(server.send_or_recieve == "send"):
+	print("sending...")
+	if(server.send_file()):
+		print("succesful.")
+	else:
+		system("rm " + server.file_name + " >/dev/null 2>&1")
+		system("del " + server.file_name + " >/dev/null 2>&1")
+		print("failed!")
+
+server.shutdown()
