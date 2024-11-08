@@ -1,7 +1,9 @@
 from os import system
+from os import path
 try:
 	import tkinter as tk
 	from tkinter import messagebox
+	from tkinter import filedialog
 except:
 	print("Make sure tkinter is installed!")
 	exit()
@@ -34,6 +36,7 @@ class Client:
 		else:
 			file_label.place(x=FL_X, y=FL_Y)
 			file_entry.place(x=FL_X + 150, y=FL_Y + 5)
+			browse_button.place(x=FL_X + 500, y=FL_Y + 5)
 			recieve_button.place(x=FL_X + 150, y=FL_Y + 50)
 			send_button.place(x=FL_X + 300, y=FL_Y + 50)
 			_text = "Connected to\n" + self.ip + ":" + str(self.port)
@@ -56,12 +59,19 @@ class Client:
 		elif(p == "1"):
 			return 0
 
+	def browse_files(self):
+		filename = filedialog.askopenfilename(initialdir = "/",
+											  title = "Select a file",
+											  filetypes = [("All Files", "*.*")])
+		file_entry.delete(len(file_entry.get()) -1 )
+		file_entry.insert(0, filename)
+
 	def get_file_name(self):
 		self.file_name = file_entry.get()
 		if(self.file_name in ["", " "]):
 			self.shutdown()
 			exit()
-		self.main.send(self.file_name.encode("utf-8"))
+		self.main.send(path.basename(self.file_name).encode("utf-8"))
 		if(self.main.recv(1024).decode("utf-8") == "0"):
 			messagebox.showerror(title=None, message="Something went wrong.")
 
@@ -150,6 +160,7 @@ FL_X = 30
 FL_Y = 270
 file_label = tk.Label(root, text="File name: ", font=font1)
 file_entry = tk.Entry(root, width=30, font=font2)
+browse_button = tk.Button(root, text="Browse", font=font2, command=client.browse_files)
 recieve_button = tk.Button(root, text="Recieve", font=font2, command=client.recieve_file)
 send_button = tk.Button(root, text="Send", font=font2, command=client.send_file)
 
