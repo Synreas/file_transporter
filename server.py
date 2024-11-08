@@ -63,9 +63,9 @@ class Server:
 
 	def send_file(self):
 		try:
-			with open(self.file_name, "rb") as f:
+			with open(self.file_name, "rb") as f: #creating the file
 				data = f.read(1024)
-				while(data):
+				while(data): #checking the end of the file
 					self.client_socket.send(data)
 					data = f.read(1024)
 		except:
@@ -76,12 +76,12 @@ class Server:
 	def recieve_file(self):
 		try:
 			data = self.client_socket.recv(1024)
-			1/len(data)
-			with open(self.file_name, "wb") as x:
+			1/len(data) #checking for the empty data
+			with open(self.file_name, "wb") as x: #creating the file
 				x.write(data)
 				data = self.client_socket.recv(1024)
-			with open(self.file_name, "ab") as f:
-				while(data):
+			with open(self.file_name, "ab") as f: #adding to the file
+				while(data): #checking the end of the file
 					f.write(data)
 					data = self.client_socket.recv(1024)
 		except:
@@ -92,7 +92,7 @@ class Server:
 	def shutdown(self):
 		self.main.close()
 
-system("clear || cls")
+system("clear || cls") #clearing the terminal
 server = Server()
 server.wait_for_connection()
 server.decide_send_or_recieve()
@@ -110,6 +110,7 @@ elif(server.send_or_recieve == "send"):
 	if(server.send_file()):
 		print("succesful.")
 	else:
+		# deleting the empty file
 		system("rm " + server.file_name + " >/dev/null 2>&1")
 		system("del " + server.file_name + " >/dev/null 2>&1")
 		print("failed!")

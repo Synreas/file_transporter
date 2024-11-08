@@ -47,6 +47,7 @@ class Client:
 	def get_file_name(self):
 		self.file_name = input("file name: ")
 		if(self.file_name in ["", " "]):
+			self.shutdown()
 			exit()
 		self.main.send(self.file_name.encode("utf-8"))
 		if(self.main.recv(1024).decode("utf-8") == "0"):
@@ -54,9 +55,9 @@ class Client:
 
 	def send_file(self):
 		try:
-			with open(self.file_name, "rb") as f:
+			with open(self.file_name, "rb") as f: #sending the file
 				data = f.read(1024)
-				while(data):
+				while(data): #checking the end of the file
 					self.main.send(data)
 					data = f.read(1024)
 		except:
@@ -67,12 +68,12 @@ class Client:
 	def recieve_file(self):
 		try:
 			data = self.main.recv(1024)
-			1/len(data)
-			with open(self.file_name, "wb") as x:
+			1/len(data) #checking for the empty data
+			with open(self.file_name, "wb") as x: #creating the file
 				x.write(data)
 				data = self.main.recv(1024)
-			with open(self.file_name, "ab") as f:
-				while(data):
+			with open(self.file_name, "ab") as f: #adding to the file
+				while(data): #checking the end of the file 
 					f.write(data)
 					data = self.main.recv(1024)	
 		except:
@@ -83,7 +84,7 @@ class Client:
 	def shutdown(self):
 		self.main.close()
 
-system("clear || cls")
+system("clear || cls") #clearing the terminal
 client = Client()
 client.connect()
 client.decide_send_or_recieve()
@@ -103,6 +104,7 @@ elif(client.send_or_recieve == "recieve"):
 	if (client.recieve_file()):
 		print("file recieved succesfully.")
 	else:
+		# deleting the empty file
 		system("rm " + client.file_name + " >/dev/null 2>&1")
 		system("del " + client.file_name + " >/dev/null 2>&1")
 		print("couldnt recieve the file!")

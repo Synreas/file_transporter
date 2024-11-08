@@ -1,6 +1,10 @@
 from os import system
-import tkinter as tk
-from tkinter import messagebox
+try:
+	import tkinter as tk
+	from tkinter import messagebox
+except:
+	print("Make sure tkinter is installed!")
+	exit()
 import socket
 
 class Client:
@@ -68,11 +72,11 @@ class Client:
 		self.get_file_name()
 		getting_label.config(text="sending...")
 		getting_label.place(x=CL_X + 50, y=CL_Y + 120)
-		root.update()
+		root.update() #updating the getting_label
 		try:
-			with open(self.file_name, "rb") as f:
+			with open(self.file_name, "rb") as f: #sending the file
 				data = f.read(1024)
-				while(data):
+				while(data): #checking the end of the file
 					self.main.send(data)
 					data = f.read(1024)
 		except:
@@ -90,18 +94,19 @@ class Client:
 		self.get_file_name()
 		getting_label.config(text="recieving...")
 		getting_label.place(x=CL_X + 50, y=CL_Y + 120)
-		root.update()
+		root.update() #updating the getting_label
 		try:
 			data = self.main.recv(1024)
-			1/len(data)
-			with open(self.file_name, "wb") as x:
+			1/len(data) #checking for the empty data
+			with open(self.file_name, "wb") as x: #creating the file
 				x.write(data)
 				data = self.main.recv(1024)
-			with open(self.file_name, "ab") as f:
-				while(data):
+			with open(self.file_name, "ab") as f: #adding to the file
+				while(data): #checking the end of the file
 					f.write(data)
 					data = self.main.recv(1024)	
 		except:
+			# deleting empty file
 			system("rm " + client.file_name + " >/dev/null 2>&1")
 			system("del " + client.file_name + " >/dev/null 2>&1")
 			messagebox.showerror(title=None, message="Couldn't recieve the file.")
@@ -120,8 +125,8 @@ root = tk.Tk()
 root.geometry("680x440")
 root.title("FileTransporter")
 
-font1 = ("Cambria", 32)
-font2 = ("Arial", 24)
+font1 = ("Cambria", 32) #for labels
+font2 = ("Arial", 24) #for buttons and entries
 
 IL_X = 30
 IL_Y = 20
